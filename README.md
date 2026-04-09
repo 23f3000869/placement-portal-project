@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Placement Portal Application
 
 ## Setup & Run
@@ -32,3 +33,10 @@ placement_portal/
 └── static/
     ├── css/style.css
     └── resumes/        # Uploaded student resumes
+=======
+# placement-portal-project
+this is a dummy project that helps:
+🎓 Students can build their profile, upload resumes, browse placement drives, and track their applications.
+🏢 Companies can register, post job drives, and manage applicants.
+🛠️ Admins can approve companies and drives, manage student records, and oversee the entire placement process.
+>>>>>>> f339d828d8a751622affe111f23af0f33fbae44e
