@@ -33,6 +33,8 @@ placement_portal/
 └── static/
     ├── css/style.css
     └── resumes/        # Uploaded student resumes
+
+    
 =======
 # placement-portal-project
 this is a dummy project that helps:
