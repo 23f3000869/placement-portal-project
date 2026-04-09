@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — PlacementHub{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3 mb-5">
+  <div>
+    <h2 class="page-title tracking-tight text-white mb-1">Welcome, <span class="text-coral">{{ student.name }}</span> 👋</h2>
+    <p class="text-muted font-mono mb-0">
+      {% if student.branch %}{{ student.branch }}{% endif %}
+      {% if student.branch and student.cgpa %} &mdash; {% endif %}
+      {% if student.cgpa %}CGPA: <strong class="text-white">{{ student.cgpa }}</strong>{% endif %}
+      {% if not student.branch and not student.cgpa %}
+        <a href="{{ url_for('student.profile') }}" class="text-brand fw-medium text-decoration-none">Complete your profile <i class="bi bi-arrow-right ms-1"></i></a>
+      {% endif %}
+    </p>
+  </div>
+  <a href="{{ url_for('student.profile') }}" class="btn btn-outline-primary shadow-sm font-mono tracking-tight pe-3">
+    <i class="bi bi-person-gear me-2"></i> Edit Profile
+  </a>
+</div>
+
+{# ── Open Drives ── #}
+<div class="d-flex align-items-center gap-2 mb-4">
+  <i class="bi bi-briefcase-fill text-coral fs-5"></i>
+  <h5 class="mb-0 text-white font-mono text-uppercase tracking-tight" style="font-size: 0.85rem;">Open Placement Drives</h5>
+</div>
+
+{% if approved_drives %}
+<div class="row g-4 mb-5">
+  {% for drive in approved_drives %}
+  <div class="col-md-6 col-xl-4 transition-base">
+    <div class="glass-card hover-lift h-100 d-flex flex-column p-4 {% if drive.id in applied_drive_ids %}border-success border-opacity-25{% endif %}">
+      <div class="d-flex justify-content-between align-items-start mb-2 gap-2">
+        <h5 class="fw-bold text-white mb-0" style="font-size: 1.1rem;">{{ drive.job_title }}</h5>
+        {% if drive.id in applied_drive_ids %}
+          <span class="badge bg-success rounded-pill px-2 pb-1" style="flex-shrink:0;"><i class="bi bi-check-lg"></i> Applied</span>
+        {% endif %}
+      </div>
+
+      <div class="text-teal font-mono small mb-3">{{ drive.company.company_name }}</div>
+
+      <p class="text-muted font-mono small mb-4 flex-grow-1" style="line-height: 1.6;">
+        {{ (drive.job_description or '')[:120] }}{% if drive.job_description and drive.job_description|length > 120 %}…{% endif %}
+      </p>
+
+      <div class="d-flex flex-wrap gap-3 mb-4">
+        {% if drive.package %}<span class="d-flex align-items-center gap-2 text-light font-mono small"><i class="bi bi-cash text-green"></i> {{ drive.package }}</span>{% endif %}
+        {% if drive.deadline %}
+        <span class="d-flex align-items-center gap-2 text-light font-mono small"><i class="bi bi-calendar text-brand"></i> Deadline: {{ drive.deadline.strftime('%d %b %Y') }}</span>
+        {% endif %}
+      </div>
+
+      <div class="border-top custom-border pt-3 mt-auto">
+        {% if drive.id not in applied_drive_ids %}
+        <form method="POST" action="{{ url_for('student.apply_drive', drive_id=drive.id) }}">
+          <button class="btn btn-primary w-100 shadow-sm font-mono tracking-tight py-2"><i class="bi bi-send me-2"></i> Apply Now</button>
+        </form>
+        {% else %}
+        <button class="btn btn-outline-success w-100 py-2 font-mono tracking-tight" disabled>
+          <i class="bi bi-check-circle-fill me-2"></i> Already Applied
+        </button>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state border-0 mb-5" style="background-color: var(--surface2);">
+  <i class="bi bi-briefcase empty-state-icon text-coral"></i>
+  <h5 class="text-white">No Open Drives</h5>
+  <p class="text-muted font-mono small mb-0">There are no open placement drives at the moment. Check back soon!</p>
+</div>
+{% endif %}
+
+{# ── Recent Applications ── #}
+{% if applications %}
+<div class="d-flex align-items-center gap-2 mb-4">
+  <i class="bi bi-clock-history text-brand fs-5"></i>
+  <h5 class="mb-0 text-white font-mono text-uppercase tracking-tight" style="font-size: 0.85rem;">Recent Applications</h5>
+</div>
+
+<div class="glass-card mb-5">
+  <div class="table-responsive">
+    <table class="table table-custom table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th>Job Title</th>
+          <th>Company</th>
+          <th>Package</th>
+          <th>Applied On</th>
+          <th class="text-end">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for a in applications[:5] %}
+      <tr>
+        <td class="fw-bold text-white">{{ a.drive.job_title }}</td>
+        <td class="text-teal font-mono small">{{ a.drive.company.company_name }}</td>
+        <td><span class="text-light fw-medium">{{ a.drive.package or '—' }}</span></td>
+        <td><span class="text-muted font-mono small">{{ a.applied_on.strftime('%d %b %Y') }}</span></td>
+        <td class="text-end">
+          {% if a.status == 'selected'    %}<span class="badge bg-selected">Selected</span>
+          {% elif a.status == 'shortlisted'%}<span class="badge bg-shortlist">Shortlisted</span>
+          {% elif a.status == 'rejected'  %}<span class="badge bg-rejected">Rejected</span>
+          {% else %}<span class="badge bg-applied">Applied</span>{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% if applications|length > 5 %}
+  <div class="card-footer border-top custom-border bg-transparent p-3 text-center">
+    <a href="{{ url_for('student.my_applications') }}" class="btn btn-outline-primary btn-sm px-4 rounded-pill font-mono tracking-tight">
+      View All {{ applications|length }} Applications
+    </a>
+  </div>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}

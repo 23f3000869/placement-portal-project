@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Company Profile — PlacementHub{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center pt-4">
+  <div class="col-12 col-md-10 col-lg-8">
+    <div class="d-flex align-items-center gap-3 border-bottom custom-border pb-3 mb-4">
+      <div class="bg-teal-dim text-teal rounded-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 48px; height: 48px;">
+        <i class="bi bi-building-gear fs-4"></i>
+      </div>
+      <div>
+        <h3 class="mb-1 text-white tracking-tight">Company Profile</h3>
+        <p class="text-muted font-mono small mb-0">Keep your corporate information up to date for better visibility.</p>
+      </div>
+    </div>
+
+    <div class="glass-card p-4 p-md-5">
+      <form method="POST">
+        <div class="mb-4">
+          <label class="form-label" for="company_name">Company Name <span class="text-coral">*</span></label>
+          <input type="text" name="company_name" id="company_name" class="form-control" value="{{ company.company_name }}" required>
+        </div>
+        
+        <div class="row g-4 mb-4">
+          <div class="col-md-6">
+            <label class="form-label" for="hr_contact">HR Contact Name / Number</label>
+            <input type="text" name="hr_contact" id="hr_contact" class="form-control" value="{{ company.hr_contact or '' }}" placeholder="e.g. John Doe - 555-0100">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="website">Corporate Website</label>
+            <input type="url" name="website" id="website" class="form-control" value="{{ company.website or '' }}" placeholder="https://example.com">
+          </div>
+        </div>
+        
+        <div class="mb-5">
+          <label class="form-label" for="description">About the Company</label>
+          <textarea name="description" id="description" class="form-control" rows="5" placeholder="Brief description of your company, mission, or values…">{{ company.description or '' }}</textarea>
+        </div>
+        
+        <button type="submit" class="btn btn-custom-teal px-4 py-2 font-mono tracking-tight shadow-sm">
+          <i class="bi bi-floppy me-2"></i> Save Profile
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

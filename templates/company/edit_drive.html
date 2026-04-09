@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Edit Drive — {{ drive.job_title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center pt-4">
+  <div class="col-12 col-md-10 col-lg-8">
+    <div class="d-flex align-items-center gap-3 border-bottom custom-border pb-3 mb-4">
+      <div class="bg-brand text-brand rounded-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 48px; height: 48px; background-color: var(--teal-dim);">
+        <i class="bi bi-pencil-square fs-4 text-teal"></i>
+      </div>
+      <div>
+        <h3 class="mb-1 text-white tracking-tight">Edit Placement Drive</h3>
+        <p class="text-muted font-mono small mb-0">{{ drive.job_title }}</p>
+      </div>
+    </div>
+
+    <div class="glass-card p-4 p-md-5">
+      <form method="POST">
+        <div class="mb-4">
+          <label class="form-label" for="job_title">Job Title / Role <span class="text-coral">*</span></label>
+          <input type="text" name="job_title" id="job_title" class="form-control" value="{{ drive.job_title }}" required>
+        </div>
+        
+        <div class="mb-4">
+          <label class="form-label" for="job_description">Job Description</label>
+          <textarea name="job_description" id="job_description" class="form-control" rows="4">{{ drive.job_description or '' }}</textarea>
+        </div>
+        
+        <div class="mb-4">
+          <label class="form-label" for="eligibility_criteria">Eligibility Criteria</label>
+          <textarea name="eligibility_criteria" id="eligibility_criteria" class="form-control" rows="2">{{ drive.eligibility or '' }}</textarea>
+        </div>
+        
+        <div class="row g-4 mb-5">
+          <div class="col-md-6">
+            <label class="form-label" for="package">Package (CTC)</label>
+            <input type="text" name="package" id="package" class="form-control" value="{{ drive.package or '' }}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="application_deadline">Application Deadline</label>
+            <input type="date" name="application_deadline" id="application_deadline" class="form-control text-muted" style="color-scheme: dark;" value="{{ drive.deadline or '' }}">
+          </div>
+        </div>
+        
+        <div class="d-flex gap-3">
+          <button type="submit" class="btn btn-custom-teal px-4 py-2 font-mono tracking-tight shadow-sm">
+            <i class="bi bi-floppy me-2"></i> Save Changes
+          </button>
+          <a href="{{ url_for('company.dashboard') }}" class="btn btn-glass text-muted px-4 py-2 font-mono">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

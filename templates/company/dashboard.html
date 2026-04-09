@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}{{ company.company_name }} — Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3 mb-5">
+  <div>
+    <h2 class="page-title tracking-tight text-white mb-1">{{ company.company_name }}</h2>
+    <div class="d-flex align-items-center gap-2 mt-2">
+      <span class="text-muted font-mono small">Company Dashboard &mdash;</span>
+      {% if company.approval_status == 'approved' %}
+        <span class="badge bg-approved">Approved</span>
+      {% elif company.approval_status == 'rejected' %}
+        <span class="badge bg-rejected">Rejected</span>
+      {% else %}
+        <span class="badge bg-pending">Pending Approval</span>
+      {% endif %}
+    </div>
+  </div>
+  {% if company.approval_status == 'approved' %}
+  <a href="{{ url_for('company.create_drive') }}" class="btn btn-primary font-mono tracking-tight shadow-sm pe-4">
+    <i class="bi bi-plus-circle me-2"></i> New Drive
+  </a>
+  {% endif %}
+</div>
+
+{% if company.approval_status != 'approved' %}
+<div class="alert alert-warning bg-pending border-0 rounded-4 p-4 mb-5 d-flex align-items-start gap-3" role="alert">
+  <i class="bi bi-hourglass-split fs-3 text-amber"></i>
+  <div>
+    <h6 class="mb-1 fw-bold text-amber">Account Pending Verification</h6>
+    <p class="mb-0 small text-amber opacity-75 font-mono">Your company is waiting for admin approval. You can create and post placement drives once your account is verified.</p>
+  </div>
+</div>
+{% endif %}
+
+<div class="d-flex align-items-center gap-2 mb-4">
+  <i class="bi bi-briefcase-fill text-teal fs-5"></i>
+  <h5 class="mb-0 text-white font-mono text-uppercase tracking-tight" style="font-size: 0.85rem;">Your Placement Drives</h5>
+</div>
+
+{% if drives_with_counts %}
+<div class="row g-4 mb-5">
+  {% for drive, app_count in drives_with_counts %}
+  <div class="col-md-6 col-xl-4 transition-base">
+    <div class="glass-card hover-lift h-100 d-flex flex-column p-4">
+      <div class="d-flex justify-content-between align-items-start mb-3">
+        <h5 class="fw-bold text-white mb-0" style="font-size: 1.1rem;">{{ drive.job_title }}</h5>
+        {% if drive.status == 'approved'  %}<span class="badge bg-approved">Live</span>
+        {% elif drive.status == 'closed'  %}<span class="badge bg-closed">Closed</span>
+        {% elif drive.status == 'rejected'%}<span class="badge bg-rejected">Rejected</span>
+        {% else %}<span class="badge bg-pending">Pending</span>{% endif %}
+      </div>
+
+      <p class="text-muted font-mono small mb-4 flex-grow-1" style="line-height: 1.6;">
+        {{ (drive.job_description or '')[:110] }}{% if drive.job_description and drive.job_description|length > 110 %}…{% endif %}
+      </p>
+
+      <div class="d-flex flex-wrap gap-3 mb-4">
+        <span class="d-flex align-items-center gap-2 text-light font-mono small"><i class="bi bi-cash text-green"></i> {{ drive.package or 'Unspecified' }}</span>
+        <span class="d-flex align-items-center gap-2 text-light font-mono small"><i class="bi bi-calendar text-brand"></i> {{ drive.deadline or 'No deadline' }}</span>
+        <span class="d-flex align-items-center gap-2 text-light font-mono small border border-secondary px-2 py-1 rounded text-teal"><i class="bi bi-people-fill"></i> {{ app_count }} applicant{{ 's' if app_count != 1 else '' }}</span>
+      </div>
+
+      <div class="d-flex gap-2 border-top custom-border pt-3 mt-auto">
+        <a href="{{ url_for('company.drive_applications', drive_id=drive.id) }}" class="btn btn-sm btn-outline-primary flex-grow-1 custom-border">
+          <i class="bi bi-people me-1"></i> Applicants
+        </a>
+
+        {% if drive.status != 'closed' %}
+        <a href="{{ url_for('company.edit_drive', drive_id=drive.id) }}" class="btn btn-sm btn-glass text-muted px-3" title="Edit Drive">
+          <i class="bi bi-pencil"></i>
+        </a>
+        <form method="POST" action="{{ url_for('company.close_drive', drive_id=drive.id) }}" onsubmit="return confirm('Close this drive? Students will no longer be able to apply.')">
+          <button class="btn btn-sm btn-glass text-amber px-3" title="Close Drive"><i class="bi bi-x-circle"></i></button>
+        </form>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('company.delete_drive', drive_id=drive.id) }}" onsubmit="return confirm('Delete this drive? All applications will be lost.')">
+          <button class="btn btn-sm btn-glass text-coral px-3" title="Delete Drive"><i class="bi bi-trash"></i></button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state border-0" style="background-color: var(--surface2);">
+  <i class="bi bi-briefcase empty-state-icon text-teal"></i>
+  <h5 class="text-white">No Drives Available</h5>
+  <p class="text-muted font-mono small mb-0">You haven't posted any placement drives yet.{% if company.approval_status == 'approved' %} <a href="{{ url_for('company.create_drive') }}" class="text-brand text-decoration-none fw-bold">Create your first drive.</a>{% endif %}</p>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Placement Drives — PlacementHub{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3 mb-4">
+  <div>
+    <h2 class="page-title tracking-tight text-white mb-1"><i class="bi bi-briefcase text-purple-light me-2"></i>Drives</h2>
+    <p class="text-muted font-mono mb-0">{{ drives|length }} placement drive{{ 's' if drives|length != 1 else '' }} in total</p>
+  </div>
+</div>
+
+<div class="glass-card mb-5">
+  <div class="table-responsive">
+    <table class="table table-custom table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th>Job Title / Role</th>
+          <th>Company</th>
+          <th>Package</th>
+          <th>Deadline</th>
+          <th>Apps</th>
+          <th>Status</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for drive in drives %}
+      <tr>
+        <td>
+          <div class="fw-bold text-white">{{ drive.job_title }}</div>
+          <div class="text-muted font-mono small mt-1">{{ (drive.job_description or '')[:55] }}{% if drive.job_description and drive.job_description|length > 55 %}…{% endif %}</div>
+        </td>
+        <td><span class="text-teal font-mono small">{{ drive.company.company_name }}</span></td>
+        <td><span class="text-light fw-medium">{{ drive.package or '—' }}</span></td>
+        <td><span class="text-muted font-mono small">{{ drive.deadline or '—' }}</span></td>
+        <td><span class="badge bg-purple-dim text-purple-light border border-secondary">{{ drive.applications|length }}</span></td>
+        <td>
+          {% if drive.status == 'approved' %}<span class="badge bg-approved">Approved</span>
+          {% elif drive.status == 'closed'  %}<span class="badge bg-closed">Closed</span>
+          {% elif drive.status == 'rejected'%}<span class="badge bg-rejected">Rejected</span>
+          {% else %}<span class="badge bg-pending">Pending</span>{% endif %}
+        </td>
+        <td class="text-end">
+          {% if drive.status == 'pending' %}
+          <div class="d-flex gap-2 justify-content-end">
+            <form method="POST" action="{{ url_for('admin.approve_drive', drive_id=drive.id) }}" class="d-inline">
+              <button class="btn btn-sm btn-outline-success custom-border px-3 rounded-pill font-mono small">Approve</button>
+            </form>
+            <form method="POST" action="{{ url_for('admin.reject_drive', drive_id=drive.id) }}" class="d-inline">
+              <button class="btn btn-sm btn-outline-danger custom-border px-3 rounded-pill font-mono small">Reject</button>
+            </form>
+          </div>
+          {% else %}
+          <span class="text-muted">—</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="7" class="border-bottom-0">
+          <div class="empty-state">
+            <i class="bi bi-briefcase empty-state-icon text-purple"></i>
+            <h5 class="text-white">No Drives Available</h5>
+            <p class="text-muted font-mono text-sm mb-0">There are no placement drives registered in the system yet.</p>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

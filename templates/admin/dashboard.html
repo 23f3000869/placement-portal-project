@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard — PlacementHub{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3 mb-5">
+  <div>
+    <h2 class="page-title tracking-tight text-white mb-1">Admin Dashboard</h2>
+    <p class="text-muted font-mono mb-0">Welcome back, <strong class="text-purple">{{ session.get('name') }}</strong></p>
+  </div>
+</div>
+
+{# ── Stats row ── #}
+<div class="row g-4 mb-5">
+  <div class="col-sm-6 col-lg-4 col-xl-2">
+    <div class="glass-card hover-lift stat-card h-100">
+      <div class="stat-icon bg-purple-dim text-purple">
+        <i class="bi bi-people-fill"></i>
+      </div>
+      <div class="stat-info">
+        <div class="stat-value text-white">{{ total_students }}</div>
+        <div class="stat-label">Total Students</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-lg-4 col-xl-2">
+    <div class="glass-card hover-lift stat-card h-100">
+      <div class="stat-icon bg-teal-dim text-teal">
+        <i class="bi bi-building-fill"></i>
+      </div>
+      <div class="stat-info">
+        <div class="stat-value text-white">{{ total_companies }}</div>
+        <div class="stat-label">Approved Cos.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-lg-4 col-xl-2">
+    <div class="glass-card hover-lift stat-card h-100">
+      <div class="stat-icon bg-purple-dim text-purple-light">
+        <i class="bi bi-briefcase-fill"></i>
+      </div>
+      <div class="stat-info">
+        <div class="stat-value text-white">{{ total_drives }}</div>
+        <div class="stat-label">Total Drives</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-lg-4 col-xl-2">
+    <div class="glass-card hover-lift stat-card h-100" style="border-color: var(--amber-dim);">
+      <div class="stat-icon" style="background-color: rgba(245, 166, 35, 0.1); color: var(--amber);">
+        <i class="bi bi-hourglass-split"></i>
+      </div>
+      <div class="stat-info">
+        <div class="stat-value text-white">{{ pending_companies }}</div>
+        <div class="stat-label">Pending Cos.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-lg-4 col-xl-2">
+    <div class="glass-card hover-lift stat-card h-100" style="border-color: var(--coral-dim);">
+      <div class="stat-icon" style="background-color: rgba(255, 107, 107, 0.1); color: var(--coral);">
+        <i class="bi bi-clock-history"></i>
+      </div>
+      <div class="stat-info">
+        <div class="stat-value text-white">{{ pending_drives }}</div>
+        <div class="stat-label">Pending Drives</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-lg-4 col-xl-2">
+    <div class="glass-card hover-lift stat-card h-100">
+      <div class="stat-icon bg-coral-dim text-coral">
+        <i class="bi bi-file-earmark-check-fill"></i>
+      </div>
+      <div class="stat-info">
+        <div class="stat-value text-white">{{ total_applications }}</div>
+        <div class="stat-label">Total Apps</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{# ── Quick actions ── #}
+<div class="d-flex align-items-center gap-2 mb-4">
+  <i class="bi bi-lightning-charge-fill text-amber fs-5"></i>
+  <h5 class="mb-0 text-white font-mono text-uppercase tracking-tight" style="font-size: 0.85rem;">Quick Actions</h5>
+</div>
+
+<div class="row g-3">
+  <div class="col-6 col-md-3">
+    <a href="{{ url_for('admin.companies') }}" class="btn glass-card w-100 p-4 text-center hover-lift text-decoration-none">
+      <i class="bi bi-building fs-3 text-teal mb-2 d-block"></i>
+      <span class="font-mono small text-muted">Manage Companies</span>
+    </a>
+  </div>
+  <div class="col-6 col-md-3">
+    <a href="{{ url_for('admin.students') }}" class="btn glass-card w-100 p-4 text-center hover-lift text-decoration-none">
+      <i class="bi bi-people fs-3 text-coral mb-2 d-block"></i>
+      <span class="font-mono small text-muted">Manage Students</span>
+    </a>
+  </div>
+  <div class="col-6 col-md-3">
+    <a href="{{ url_for('admin.drives') }}" class="btn glass-card w-100 p-4 text-center hover-lift text-decoration-none">
+      <i class="bi bi-briefcase fs-3 text-purple mb-2 d-block"></i>
+      <span class="font-mono small text-muted">Manage Drives</span>
+    </a>
+  </div>
+  <div class="col-6 col-md-3">
+    <a href="{{ url_for('admin.applications') }}" class="btn glass-card w-100 p-4 text-center hover-lift text-decoration-none">
+      <i class="bi bi-file-earmark-text fs-3 text-amber mb-2 d-block"></i>
+      <span class="font-mono small text-muted">All Applications</span>
+    </a>
+  </div>
+</div>
+{% endblock %}

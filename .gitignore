@@ -1,0 +1,24 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+venv/
+env/
+.env
+
+# Flask / SQLite database
+instance/
+*.db
+*.sqlite3
+
+# Uploaded files
+static/resumes/
+
+# VS Code settings (optional - you can remove this line if you want to keep it)
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}All Applications — PlacementHub{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3 mb-4">
+  <div>
+    <h2 class="page-title tracking-tight text-white mb-1"><i class="bi bi-file-earmark-text text-amber me-2"></i>Applications</h2>
+    <p class="text-muted font-mono mb-0">{{ applications|length }} application{{ 's' if applications|length != 1 else '' }} in the system</p>
+  </div>
+</div>
+
+<div class="glass-card mb-5">
+  <div class="table-responsive">
+    <table class="table table-custom table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Student Details</th>
+          <th>Drive Details</th>
+          <th>Applied On</th>
+          <th class="text-end">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for a in applications %}
+      <tr>
+        <td class="text-muted font-mono small">#{{ a.id }}</td>
+        <td>
+          <div class="fw-bold text-white">{{ a.student.name }}</div>
+          <div class="text-coral font-mono small mt-1">{{ a.student.username or '—' }}</div>
+        </td>
+        <td>
+          <div class="text-light fw-medium">{{ a.drive.job_title }}</div>
+          <div class="text-teal font-mono small mt-1">{{ a.drive.company.company_name }}</div>
+        </td>
+        <td><span class="text-muted font-mono small">{{ a.applied_on.strftime('%d %b %Y') }}</span></td>
+        <td class="text-end">
+          {% if a.status == 'selected'   %}<span class="badge bg-selected">Selected</span>
+          {% elif a.status == 'shortlisted'%}<span class="badge bg-shortlist">Shortlisted</span>
+          {% elif a.status == 'rejected'  %}<span class="badge bg-rejected">Rejected</span>
+          {% else %}<span class="badge bg-applied">Applied</span>{% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="5" class="border-bottom-0">
+          <div class="empty-state">
+            <i class="bi bi-file-earmark-text empty-state-icon text-amber"></i>
+            <h5 class="text-white">No Applications Yet</h5>
+            <p class="text-muted font-mono text-sm mb-0">There are no student applications recorded in the system.</p>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

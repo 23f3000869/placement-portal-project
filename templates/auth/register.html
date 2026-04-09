@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% block title %}Register — PlacementHub{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: calc(100vh - 140px); padding-top: 2rem; padding-bottom: 2rem;">
+  <div class="col-12 col-lg-8 col-xl-7 transition-base">
+    <div class="glass-card p-4 p-md-5">
+      <div class="text-center mb-5">
+        <h2 class="page-title tracking-tight mb-2">Create Account</h2>
+        <p class="text-muted font-mono small">Join PlacementHub and unlock your future</p>
+      </div>
+
+      <!-- Role Selector -->
+      <div class="d-flex justify-content-center gap-3 mb-5" id="rolePills">
+        <button type="button" class="btn btn-outline-primary active d-flex flex-column align-items-center py-3 px-4 rounded-4" id="pill-student" onclick="selectRole('student')" style="min-width: 140px;">
+          <i class="bi bi-mortarboard fs-3 mb-2"></i>
+          <span class="font-mono small tracking-tight">Student</span>
+        </button>
+        <button type="button" class="btn border custom-border text-teal d-flex flex-column align-items-center py-3 px-4 rounded-4" id="pill-company" onclick="selectRole('company')" style="min-width: 140px;">
+          <i class="bi bi-building fs-3 mb-2"></i>
+          <span class="font-mono small tracking-tight">Company</span>
+        </button>
+      </div>
+
+      <form method="POST" id="regForm" novalidate>
+        <input type="hidden" name="role" id="roleInput" value="student">
+
+        <div class="row g-4 mb-4">
+          <div class="col-md-6">
+            <label class="form-label" for="reg-name">Full Name</label>
+            <input type="text" name="name" id="reg-name" class="form-control" placeholder="Jane Doe" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="reg-email">Email Address</label>
+            <input type="email" name="email" id="reg-email" class="form-control" placeholder="you@example.com" required autocomplete="email">
+          </div>
+          <div class="col-12">
+            <label class="form-label" for="reg-password">Password</label>
+            <input type="password" name="password" id="reg-password" class="form-control" placeholder="Minimum 6 characters" minlength="6" required>
+          </div>
+        </div>
+
+        <hr class="custom-border my-4" style="opacity:0.3">
+
+        <!-- Student Fields -->
+        <div id="studentFields" class="fade-in-up">
+          <div class="row g-4 mb-4">
+            <div class="col-md-6">
+              <label class="form-label" for="student_id">Student ID / Roll No.</label>
+              <input type="text" name="student_id" id="student_id" class="form-control" placeholder="e.g. CS21B001">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="branch">Branch</label>
+              <input type="text" name="branch" id="branch" class="form-control" placeholder="e.g. CSE">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="cgpa">CGPA</label>
+              <input type="number" name="cgpa" id="cgpa" class="form-control" step="0.01" min="0" max="10" placeholder="e.g. 8.5">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="phone">Phone Number</label>
+              <input type="tel" name="phone" id="phone" class="form-control" placeholder="10-digit number">
+            </div>
+          </div>
+        </div>
+
+        <!-- Company Fields -->
+        <div id="companyFields" style="display:none;" class="fade-in-up">
+          <div class="row g-4 mb-3">
+            <div class="col-md-6">
+              <label class="form-label" for="company_name">Company Name</label>
+              <input type="text" name="company_name" id="company_name" class="form-control" placeholder="Legal corporate name">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="hr_contact">HR Contact Name/Number</label>
+              <input type="text" name="hr_contact" id="hr_contact" class="form-control" placeholder="John Smith - 555-1234">
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="website">Corporate Website</label>
+              <input type="url" name="website" id="website" class="form-control" placeholder="https://example.com">
+            </div>
+          </div>
+          
+          <div class="alert alert-warning bg-pending border-0 d-flex align-items-center mt-4 p-3 rounded-3" role="alert">
+            <i class="bi bi-shield-lock-fill fs-4 me-3"></i>
+            <div class="small">
+              <strong>Approval Required:</strong> Company accounts must be verified and approved by the Administration before they are permitted to create placement drives.
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 py-3 rounded-3 shadow-none font-mono tracking-tight mt-3 mb-4" id="submitBtn">
+          Register as Student <i class="bi bi-arrow-right ms-2"></i>
+        </button>
+      </form>
+
+      <div class="text-center">
+        <p class="text-muted small mb-0">
+          Already have an account? 
+          <a href="{{ url_for('auth.login') }}" class="text-brand fw-medium text-decoration-none">Sign in here</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% block scripts %}
+<script>
+function selectRole(role) {
+  document.getElementById('roleInput').value = role;
+
+  const pillS = document.getElementById('pill-student');
+  const pillC = document.getElementById('pill-company');
+  const studentF = document.getElementById('studentFields');
+  const companyF = document.getElementById('companyFields');
+  const btn = document.getElementById('submitBtn');
+
+  if (role === 'student') {
+    // Reset Classes
+    pillC.className = 'btn border custom-border text-teal d-flex flex-column align-items-center py-3 px-4 rounded-4';
+    pillS.className = 'btn btn-outline-primary active d-flex flex-column align-items-center py-3 px-4 rounded-4';
+    
+    studentF.style.display = 'block';
+    companyF.style.display = 'none';
+    
+    btn.className = 'btn btn-primary w-100 py-3 rounded-3 shadow-none font-mono tracking-tight mt-3 mb-4';
+    btn.innerHTML = 'Register as Student <i class="bi bi-arrow-right ms-2"></i>';
+
+    companyF.querySelectorAll('input').forEach(i => i.required = false);
+  } else {
+    // Reset Classes
+    pillS.className = 'btn border custom-border text-brand d-flex flex-column align-items-center py-3 px-4 rounded-4';
+    pillC.className = 'btn btn-outline-info active text-white d-flex flex-column align-items-center py-3 px-4 rounded-4';
+    pillC.style.borderColor = 'var(--teal)';
+    pillC.style.backgroundColor = 'var(--teal-dim)';
+    
+    studentF.style.display = 'none';
+    companyF.style.display = 'block';
+    
+    btn.className = 'btn btn-custom-teal w-100 py-3 rounded-3 shadow-none font-mono tracking-tight mt-3 mb-4';
+    btn.innerHTML = 'Register as Company <i class="bi bi-arrow-right ms-2"></i>';
+
+    companyF.querySelectorAll('input').forEach(i => {
+      if (i.name === 'company_name') i.required = true;
+    });
+  }
+}
+</script>
+{% endblock %}
+{% endblock %}
